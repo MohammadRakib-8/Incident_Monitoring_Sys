@@ -82,8 +82,15 @@
             <input type="datetime-local" wire:model="initial_etr" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3">
             @error('initial_etr') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
         </div>
+
+         <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Exact Resulation Time</label>
+            <input type="datetime-local" wire:model="resulation_time" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3">
+            @error('resulation_time') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+        </div>
+
 <div class="pt-2">
-<button type="submit">
+<button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded transition duration-150">
     Submit
 </button>
   </div>

@@ -13,7 +13,10 @@ Route::view('profile', 'profile')
     ->name('profile');
 
 Route::get('/incidentfrom', function () {
-    return view('homepage');
+    return view('homepage');;
 });
 
+Route::get('/homepage',function(){
+
+});
 require __DIR__.'/auth.php';

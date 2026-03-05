@@ -17,6 +17,7 @@ class IncidentForm extends Component
     public $description = '';
     public $start_time;
     public $initial_etr;
+    public $resulation_time;
 
     protected $rules = [
         'zonal' => 'required',
@@ -25,6 +26,7 @@ class IncidentForm extends Component
         'description' => 'required|min:5',
         'start_time' => 'required',
         'initial_etr' => 'required',
+        'resulation_time'=>'required',
     ];
 
     public function submit()
@@ -48,12 +50,13 @@ class IncidentForm extends Component
             'description'   => $this->description,
             'start_time'    => $this->start_time,
             'initial_etr'   => $this->initial_etr,
+            'resulation_time'=>$this->resulation_time,
             'status'        => 'Open',
         ]);
 
         session()->flash('message', 'Incident successfully logged.');
         
-        $this->reset(['reporter_name', 'zonal', 'category', 'description', 'start_time', 'initial_etr']);
+        $this->reset(['reporter_name', 'zonal', 'category', 'description', 'start_time', 'initial_etr','resulation_time']);
         $this->importance = 'High';
     }
 

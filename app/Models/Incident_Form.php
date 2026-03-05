@@ -17,6 +17,7 @@ class Incident_Form extends Model
         'description',
         'start_time',
         'initial_etr',
+        'resulation_time',
         'status',        
     ];
 
