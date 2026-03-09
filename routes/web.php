@@ -12,7 +12,7 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-Route::get('/incidentfrom', function () {
+Route::get('/incidentdashboard', function () {
     return view('homepage');;
 });
 

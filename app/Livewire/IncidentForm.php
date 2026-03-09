@@ -26,7 +26,7 @@ class IncidentForm extends Component
         'description' => 'required|min:5',
         'start_time' => 'required',
         'initial_etr' => 'required',
-        'resulation_time'=>'required',
+        'resulation_time'=>'nullable|date',
     ];
 
     public function submit()
@@ -58,7 +58,9 @@ class IncidentForm extends Component
         
         $this->reset(['reporter_name', 'zonal', 'category', 'description', 'start_time', 'initial_etr','resulation_time']);
         $this->importance = 'High';
-    }
+
+        $this->dispatch('incident-added')->to(IncidentDashboard::class);    
+        }
 
     public function render()
     {

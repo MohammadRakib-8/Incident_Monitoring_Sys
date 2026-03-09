@@ -1,8 +1,7 @@
 <div class="bg-white p-6 rounded-lg shadow-md h-fit">
     <h2 class="text-xl font-bold text-gray-800 border-b pb-2 mb-6">Add New Incident</h2>
 
-    <!-- Debug Errors Block -->
-    @if ($errors->any())
+    {{-- @if ($errors->any())
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             <strong class="font-bold">Please fix the following errors:</strong>
             <ul class="mt-2 list-disc list-inside">
@@ -11,7 +10,7 @@
                 @endforeach
             </ul>
         </div>
-    @endif
+    @endif --}}
 
     @if (session()->has('message'))
         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
@@ -62,45 +61,34 @@
             </select>
         </div>
 
-        <!-- Description -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Incident Description</label>
             <textarea wire:model="description" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3" placeholder="Describe the issue here..."></textarea>
             @error('description') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
         </div>
 
-        <!-- Incident Start Time -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Incident Start Time</label>
             <input type="datetime-local" wire:model="start_time" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3">
             @error('start_time') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
         </div>
 
-        <!-- Initial ETR -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Initial ETR</label>
             <input type="datetime-local" wire:model="initial_etr" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3">
             @error('initial_etr') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
         </div>
 
-         <div>
+         {{-- <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Exact Resulation Time</label>
             <input type="datetime-local" wire:model="resulation_time" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3">
             @error('resulation_time') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
-        </div>
+        </div> --}}
 
 <div class="pt-2">
 <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded transition duration-150">
     Submit
 </button>
   </div>
-
-
-        {{-- <!-- Submit Button -->
-        <div class="pt-2">
-            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded transition duration-150">
-                Submit Incident
-            </button>
-        </div> --}}
     </form>
 </div>

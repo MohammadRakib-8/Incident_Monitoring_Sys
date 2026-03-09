@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('description');
             $table->dateTime('start_time');
             $table->dateTime('initial_etr');
-            $table->dateTime('resulation_time');
+            $table->dateTime('resulation_time')->nullable();
             $table->string('status')->default('Open');
             $table->timestamps();
         });
