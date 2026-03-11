@@ -5,7 +5,8 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Zonal;
 use App\Models\Category;
-
+use Livewire\Attributes\On;
+use App\Models\Incident_Form;
 
 class IncidentDashboard extends Component
 {
@@ -14,6 +15,8 @@ class IncidentDashboard extends Component
     public $filterImportance = '';
     public $filterCategory = '';
     public $filterZone = '';
+    
+    public int $refreshKey = 0;
 
     public bool $showEditModal = false;
     public ?int $editId = null;
@@ -21,45 +24,59 @@ class IncidentDashboard extends Component
     public string $editEtr = '';
     public string $editNotes = '';
     public string $editRt = '';
-    public bool $showAddModal=false;
+    public bool $showAddModal = false;
   
+    protected $listeners = ['incident-added' => 'handleIncidentAdded'];
 
-    public $incidents = [];
-protected $listeners = ['incident-added' => 'handleIncidentAdded'];
+    protected $rules = [
+        'editStatus' => 'required',
+        'editEtr' => 'required|date', 
+        'editNotes' => 'required_if:editStatus,Resolved|string', 
+        'editRt' => 'required_if:editStatus,Resolved', 
+    ];
 
-
-
-    public function mount()
-    {
-        // Dummy Data
-        $this->incidents = [
-            ['id' => 1001809, 'zone' => 'Dhaka North', 'category' => 'Logical', 'importance' => 'High', 'status' => 'Open', 'started' => '03/26/2026, 09:12 AM', 'etr' => '2026-03-26T13:45', 'rt' => null, 'reporter' => 'Rakib'],
-            ['id' => 1001810, 'zone' => 'Chittagong', 'category' => 'Physical', 'importance' => 'High', 'status' => 'Resolved', 'started' => '03/25/2026, 06:55 PM', 'etr' => '2026-03-26T10:22', 'rt' => '03/26/2026, 08:03 AM', 'reporter' => 'Javed'],
-            ['id' => 1001811, 'zone' => 'Sylhet', 'category' => 'Logical', 'importance' => 'Mid', 'status' => 'InProgress', 'started' => '03/26/2026, 11:03 AM', 'etr' => '2026-03-26T15:30', 'rt' => null, 'reporter' => 'Amina'],
-            ['id' => 1001814, 'zone' => 'Dhaka South', 'category' => 'NTTN', 'importance' => 'Mid', 'status' => 'Paused', 'started' => '03/26/2026, 07:48 AM', 'etr' => '2026-03-26T14:17', 'rt' => null, 'reporter' => 'Rita'],
-            ['id' => 1001813, 'zone' => 'Khulna', 'category' => 'IIG', 'importance' => 'Low', 'status' => 'Open', 'started' => '03/26/2026, 10:21 AM', 'etr' => '2026-03-26T17:02', 'rt' => null, 'reporter' => 'Kamal'],
-            ['id' => 1001812, 'zone' => 'Rajshahi', 'category' => 'NTTN', 'importance' => 'High', 'status' => 'InProgress', 'started' => '03/26/2026, 11:27 AM', 'etr' => '2026-03-26T16:54', 'rt' => null, 'reporter' => 'Sagor'],
-        ];
+    public function mount(){
+        $this->currentStatusBtn = request('status', 'open');
+        $this->filterImportance = request('importance', '');
+        $this->filterCategory = request('category', '');
+        $this->filterZone = request('zone', '');
     }
+
+    protected $messages = [
+        'editNotes.required_if' => 'Resolution notes are required when status is Resolved.',
+        'editRt.required_if' => 'Resolution Time is required when status is Resolved.',
+    ];
 
     public function setStatus($status)
     {
         $this->currentStatusBtn = $status;
+        return redirect()->route('incidentdashboard', ['status' => $status]);
+    }
+
+    
+    #[On('echo:incidents,.incident-created')] 
+    public function handleBroadcastIncidentAdded($event)
+    {
+        // dd('Pusher Event Received Successfully!', $event); 
+        session()->flash('status', 'New incident received via Pusher!');
+        
+      
+        $this->refreshKey++;
     }
 
     public function edit($id)
     {
-        $incident = collect($this->incidents)->firstWhere('id', $id);
+        $incident = Incident_Form::find($id);
 
         if ($incident) {
             $this->editId = $id;
-            $this->editStatus = $incident['status'];
-            $this->editEtr = $incident['etr'];
-            $this->editNotes = $incident['notes'] ?? '';
+            $this->editStatus = $incident->status;
+            $this->editEtr = $incident->initial_etr ? \Carbon\Carbon::parse($incident->initial_etr)->format('Y-m-d\TH:i') : '';
+            $this->editNotes = $incident->description ?? '';
             
-            if (!empty($incident['rt'])) {
+            if (!empty($incident->resulation_time)) {
                 try {
-                    $this->editRt = \Carbon\Carbon::parse($incident['rt'])->format('Y-m-d\TH:i');
+                    $this->editRt = \Carbon\Carbon::parse($incident->resulation_time)->format('Y-m-d\TH:i');
                 } catch (\Exception $e) {
                     $this->editRt = ''; 
                 }
@@ -72,25 +89,34 @@ protected $listeners = ['incident-added' => 'handleIncidentAdded'];
     }
 
     public function update()
-    {
-        $key = collect($this->incidents)->search(fn($item) => $item['id'] === $this->editId);
+    {   
+        $this->validate();
+        $incident = Incident_Form::find($this->editId);
 
-        if ($key !== false) {
-            $this->incidents[$key]['status'] = $this->editStatus;
-            $this->incidents[$key]['etr'] = $this->editEtr;
-            $this->incidents[$key]['notes'] = $this->editNotes;
+        if ($incident) {
+            $incident->status = $this->editStatus;
+            
+            if($this->editEtr) {
+                $incident->initial_etr = \Carbon\Carbon::parse($this->editEtr);
+            }
+            
+            $incident->description = $this->editNotes;
 
             if ($this->editStatus === 'Resolved') {
                 if ($this->editRt) {
-                    $this->incidents[$key]['rt'] = \Carbon\Carbon::parse($this->editRt)->format('m/d/Y, h:i A');
+                    $incident->resulation_time = \Carbon\Carbon::parse($this->editRt);
                 } else {
-                    $this->incidents[$key]['rt'] = now()->format('m/d/Y, h:i A');
+                    $incident->resulation_time = now();
                 }
             } else {
-                $this->incidents[$key]['rt'] = null;
+                $incident->resulation_time = null;
             }
 
+            $incident->save();
+
             session()->flash('status', 'Incident Response updated successfully.');
+            
+            $this->refreshKey++;
         }
 
         $this->closeModal();
@@ -104,42 +130,47 @@ protected $listeners = ['incident-added' => 'handleIncidentAdded'];
 
     public function getFilteredIncidentsProperty()
     {
-        return collect($this->incidents)->filter(function ($incident) {
-            $statusMatch = false;
-            
-            if ($this->currentStatusBtn === 'open') {
-                $statusMatch = in_array($incident['status'], ['Open', 'InProgress']);
-            } 
-            elseif ($this->currentStatusBtn === 'Resolved') {
-                $statusMatch = $incident['status'] === 'Resolved';
-            } 
-            elseif ($this->currentStatusBtn === 'Paused') {
-                $statusMatch = $incident['status'] === 'Paused';
-            }
+        $query = Incident_Form::query();
 
-            $importanceMatch = !$this->filterImportance || $incident['importance'] === $this->filterImportance;
-            $categoryMatch = !$this->filterCategory || $incident['category'] === $this->filterCategory;
-            $zoneMatch = !$this->filterZone || $incident['zone'] === $this->filterZone;
+        if ($this->currentStatusBtn === 'open') {
+            $query->whereIn('status', ['Open', 'InProgress']);
+        } elseif ($this->currentStatusBtn === 'Resolved') {
+            $query->where('status', 'Resolved');
+        } elseif ($this->currentStatusBtn === 'Paused') {
+            $query->where('status', 'Paused');
+        }
 
-            return $statusMatch && $importanceMatch && $categoryMatch && $zoneMatch;
-        });
+        if (!empty($this->filterImportance)) {
+            $query->where('importance', $this->filterImportance);
+        }
+
+        if (!empty($this->filterCategory)) {
+            $query->whereHas('category', function($q) {
+                $q->where('name', $this->filterCategory);
+            });
+        }
+
+        if (!empty($this->filterZone)) {
+            $query->whereHas('zonal', function($q) {
+                $q->where('name', $this->filterZone);
+            });
+        }
+
+        return $query->with(['zonal', 'category'])->latest()->get();
     }
-
-
-public function handleIncidentAdded()
-{
-    $this->showAddModal = false;
-    session()->flash('status', 'New incident added successfully!');
     
-}
-
-    
+    public function handleIncidentAdded()
+    {
+        $this->showAddModal = false;
+        session()->flash('status', 'New incident added successfully!');
+        
+        $this->refreshKey++;
+    }
 
     public function render()
     {
-          $zonals = Zonal::all();
+        $zonals = Zonal::all();
         $categories = Category::all();
-        return view('livewire.incident-dashboard',compact('zonals','categories'));
-        
+        return view('livewire.incident-dashboard', compact('zonals', 'categories'));
     }
 }

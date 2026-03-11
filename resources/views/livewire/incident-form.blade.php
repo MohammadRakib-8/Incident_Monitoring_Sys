@@ -1,4 +1,5 @@
 <div class="bg-white p-6 rounded-lg shadow-md h-fit">
+    
     <h2 class="text-xl font-bold text-gray-800 border-b pb-2 mb-6">Add New Incident</h2>
 
     {{-- @if ($errors->any())
@@ -29,21 +30,22 @@
                 @error('reporter_name') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
             @endauth
         </div>
-
+<div class="flex gap-6 w-auto">
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Zonal Name</label>
-            <select wire:model="zonal" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3">
+            <select wire:model="zonal" class="mt-1 block w-auto border-gray-300 rounded-md shadow-sm py-2 px-auto">
                 <option value="">Select Zone</option>
                 @foreach ($zonals as $zone)
                     <option value="{{ $zone->name }}">{{ $zone->name }}</option>
                 @endforeach
             </select>
             @error('zonal') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+        
         </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-            <select wire:model="category" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3">
+            <select wire:model="category" class="mt-1 block w-auto border-gray-300 rounded-md shadow-sm py-2 px-auto">
                 <option value="">Select Category</option>
                 @foreach($categories as $cat)
                     <option value="{{ $cat->name }}">{{ $cat->name }}</option>
@@ -51,34 +53,34 @@
             </select>
             @error('category') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
         </div>
-
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Importance</label>
-            <select wire:model="importance" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3">
+            <select wire:model="importance" class="mt-1 block w-auto border-gray-300 rounded-md shadow-sm py-2 px-auto">
                 <option value="High">High</option>
                 <option value="Mid">Mid</option>
                 <option value="Low">Low</option>
             </select>
         </div>
+    </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Incident Description</label>
             <textarea wire:model="description" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3" placeholder="Describe the issue here..."></textarea>
             @error('description') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
         </div>
-
+<div class="flex gap-6">
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Incident Start Time</label>
-            <input type="datetime-local" wire:model="start_time" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3">
+            <input type="datetime-local" wire:model="start_time" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-auto">
             @error('start_time') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
         </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Initial ETR</label>
-            <input type="datetime-local" wire:model="initial_etr" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3">
+            <input type="datetime-local" wire:model="initial_etr" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-auto">
             @error('initial_etr') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
         </div>
-
+</div>
          {{-- <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Exact Resulation Time</label>
             <input type="datetime-local" wire:model="resulation_time" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3">

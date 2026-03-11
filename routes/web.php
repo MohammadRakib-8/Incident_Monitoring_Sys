@@ -16,6 +16,10 @@ Route::get('/incidentdashboard', function () {
     return view('homepage');;
 });
 
+// routes/web.php
+
+Route::view('/incidentdashboard', 'homepage')->name('incidentdashboard');
+
 Route::get('/homepage',function(){
 
 });
