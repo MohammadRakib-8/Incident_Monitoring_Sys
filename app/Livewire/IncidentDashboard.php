@@ -3,17 +3,25 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\Attributes\Url;
+use Livewire\Attributes\On;
 use App\Models\Zonal;
 use App\Models\Category;
-use Livewire\Attributes\On;
 use App\Models\Incident_Form;
+use App\Events\IncidentModified;
 
 class IncidentDashboard extends Component
 {
+    #[Url(as: 'status')] 
     public string $currentStatusBtn = 'open';
 
+    #[Url]
     public $filterImportance = '';
+
+    #[Url]
     public $filterCategory = '';
+
+    #[Url]
     public $filterZone = '';
     
     public int $refreshKey = 0;
@@ -35,11 +43,8 @@ class IncidentDashboard extends Component
         'editRt' => 'required_if:editStatus,Resolved', 
     ];
 
-    public function mount(){
-        $this->currentStatusBtn = request('status', 'open');
-        $this->filterImportance = request('importance', '');
-        $this->filterCategory = request('category', '');
-        $this->filterZone = request('zone', '');
+    public function mount()
+    {
     }
 
     protected $messages = [
@@ -47,21 +52,28 @@ class IncidentDashboard extends Component
         'editRt.required_if' => 'Resolution Time is required when status is Resolved.',
     ];
 
+
     public function setStatus($status)
     {
         $this->currentStatusBtn = $status;
-        return redirect()->route('incidentdashboard', ['status' => $status]);
+        
+        $this->filterImportance = '';
+        $this->filterCategory = '';
+        $this->filterZone = '';
     }
 
-    
     #[On('echo:incidents,.incident-created')] 
     public function handleBroadcastIncidentAdded($event)
     {
-        // dd('Pusher Event Received Successfully!', $event); 
-        session()->flash('status', 'New incident received via Pusher!');
-        
-      
-        $this->refreshKey++;
+        // $this->refreshKey++;
+        $this->dispatch('$refresh');
+    }
+
+     #[On('echo:incidents,.incident-modified')] 
+    public function handleBroadcastIncidentModified($event)
+    {
+        $this->dispatch('$refresh');
+        // $this->refreshKey++;
     }
 
     public function edit($id)
@@ -114,9 +126,14 @@ class IncidentDashboard extends Component
 
             $incident->save();
 
+            IncidentModified::dispatch($incident);
+
             session()->flash('status', 'Incident Response updated successfully.');
-            
-            $this->refreshKey++;
+                                // $this->dispatch('incident-modified')->to(IncidentDashboard::class);    
+
+            // $this->refreshKey++;
+             $this->dispatch('$refresh');
+
         }
 
         $this->closeModal();
@@ -128,17 +145,9 @@ class IncidentDashboard extends Component
         $this->reset(['editId', 'editStatus', 'editEtr', 'editRt', 'editNotes']);
     }
 
-    public function getFilteredIncidentsProperty()
+    private function buildBaseQuery()
     {
         $query = Incident_Form::query();
-
-        if ($this->currentStatusBtn === 'open') {
-            $query->whereIn('status', ['Open', 'InProgress']);
-        } elseif ($this->currentStatusBtn === 'Resolved') {
-            $query->where('status', 'Resolved');
-        } elseif ($this->currentStatusBtn === 'Paused') {
-            $query->where('status', 'Paused');
-        }
 
         if (!empty($this->filterImportance)) {
             $query->where('importance', $this->filterImportance);
@@ -156,7 +165,7 @@ class IncidentDashboard extends Component
             });
         }
 
-        return $query->with(['zonal', 'category'])->latest()->get();
+        return $query;
     }
     
     public function handleIncidentAdded()
@@ -164,13 +173,27 @@ class IncidentDashboard extends Component
         $this->showAddModal = false;
         session()->flash('status', 'New incident added successfully!');
         
-        $this->refreshKey++;
+        // $this->refreshKey++;
     }
 
     public function render()
     {
+
+        $allIncidents = $this->buildBaseQuery()
+            ->with(['zonal', 'category'])
+            ->latest()
+            ->get();
+
+        $openIncidents = $allIncidents->filter(fn($i) => in_array($i->status, ['Open', 'InProgress']));
+        $resolvedIncidents = $allIncidents->filter(fn($i) => $i->status === 'Resolved');
+        $pausedIncidents = $allIncidents->filter(fn($i) => $i->status === 'Paused');
+
         $zonals = Zonal::all();
         $categories = Category::all();
-        return view('livewire.incident-dashboard', compact('zonals', 'categories'));
+
+        return view('livewire.incident-dashboard', compact(
+            'openIncidents', 'resolvedIncidents', 'pausedIncidents',
+            'zonals', 'categories'
+        ));
     }
 }

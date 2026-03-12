@@ -68,11 +68,18 @@
             <textarea wire:model="description" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3" placeholder="Describe the issue here..."></textarea>
             @error('description') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
         </div>
-<div class="flex gap-6">
+<div class="flex gap-0">
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Incident Start Time</label>
-            <input type="datetime-local" wire:model="start_time" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-auto">
+            <input type="datetime-local" wire:model='start_time' class="mt-1  block w-full border-gray-300 rounded-md shadow-sm py-2 px-auto">
             @error('start_time') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+        </div>
+</div>
+<div class="flex gap-6">
+         <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Initial Reporting Time</label>
+            <input type="datetime-local" wire:model="first_report_time" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-auto">
+            @error('first_report_time') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
         </div>
 
         <div>

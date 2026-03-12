@@ -16,6 +16,7 @@ class Incident_Form extends Model
         'importance',
         'description',
         'start_time',
+        'first_report_time',
         'initial_etr',
         'resulation_time',
         'status',        
@@ -24,6 +25,7 @@ class Incident_Form extends Model
     protected $casts = [
         'start_time' => 'datetime',
         'initial_etr' => 'datetime',
+        'first_report_time'=>'datetime',
     ];
 
     public function user() { return $this->belongsTo(User::class); }

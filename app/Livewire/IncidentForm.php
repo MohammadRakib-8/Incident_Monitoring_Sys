@@ -17,6 +17,7 @@ class IncidentForm extends Component
     public $importance = 'High';
     public $description = '';
     public $start_time;
+    public $first_report_time;
     public $initial_etr;
     public $resulation_time;
 
@@ -25,8 +26,9 @@ class IncidentForm extends Component
         'category' => 'required',
         'importance' => 'required',
         'description' => 'required|min:5',
-        'start_time' => 'required',
-        'initial_etr' => 'required',
+        'start_time' => 'required|date', 
+        'first_report_time'=>'required|date|after_or_equal:start_time',
+    'initial_etr' => 'required|date|after_or_equal:first_report_time',
         'resulation_time'=>'nullable|date',
     ];
 
@@ -50,16 +52,26 @@ class IncidentForm extends Component
             'importance'    => $this->importance,
             'description'   => $this->description,
             'start_time'    => $this->start_time,
+            'first_report_time'=>$this->first_report_time,
             'initial_etr'   => $this->initial_etr,
             'resulation_time'=>$this->resulation_time,
             'status'        => 'Open',
+
+            // 'start_time'        => \Carbon\Carbon::parse($this->start_time),
+            // 'first_report_time' => \Carbon\Carbon::parse($this->first_report_time),
+            // 'initial_etr'       => \Carbon\Carbon::parse($this->initial_etr),
+            
+            // 'resulation_time'=>$this->resulation_time,
+
+            // 'status'            => 'Open',
+
         ]);
 
         IncidentCreated::dispatch($incident);
 
         session()->flash('message', 'Incident successfully logged.');
         
-        $this->reset(['reporter_name', 'zonal', 'category', 'description', 'start_time', 'initial_etr','resulation_time']);
+        $this->reset(['reporter_name', 'zonal', 'category', 'description', 'start_time','first_report_time','initial_etr','resulation_time']);
         $this->importance = 'High';
 
         $this->dispatch('incident-added')->to(IncidentDashboard::class);    

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('importance');
             $table->text('description');
             $table->dateTime('start_time');
+            $table->dateTime('first_report_time');
             $table->dateTime('initial_etr');
             $table->dateTime('resulation_time')->nullable();
             $table->string('status')->default('Open');
