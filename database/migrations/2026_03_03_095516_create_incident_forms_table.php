@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('incident__forms', function (Blueprint $table) {
+        Schema::create('incident_forms', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             
@@ -23,12 +23,13 @@ return new class extends Migration
             $table->dateTime('initial_etr');
             $table->dateTime('resulation_time')->nullable();
             $table->string('status')->default('Open');
+$table->foreignId('updated_by')->nullable()->constrained('users');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('incident__forms');
+        Schema::dropIfExists('incident_forms');
     }
 };

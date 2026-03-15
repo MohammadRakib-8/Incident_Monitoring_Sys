@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Incident_Form extends Model
 {
-    protected $table = 'incident__forms';
+    protected $table = 'incident_forms';
 
     protected $fillable = [
         'user_id',
@@ -20,6 +20,7 @@ class Incident_Form extends Model
         'initial_etr',
         'resulation_time',
         'status',        
+         'updated_by',
     ];
 
     protected $casts = [
@@ -31,4 +32,9 @@ class Incident_Form extends Model
     public function user() { return $this->belongsTo(User::class); }
     public function zonal() { return $this->belongsTo(Zonal::class); }
     public function category() { return $this->belongsTo(Category::class); }
+
+     public function updater() 
+    { 
+        return $this->belongsTo(User::class, 'updated_by'); 
+    }
 }

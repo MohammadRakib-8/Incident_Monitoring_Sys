@@ -1,7 +1,6 @@
 
 <div wire:key="incident-{{ $incident->id }}-{{ $currentStatusBtn }}-{{ $refreshKey }}" class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-100 dark:border-slate-700 p-3 flex flex-col justify-between hover:shadow-md transition border-l-4 {{ getBorderClass($incident) }}">
     <div>
-        <!-- Top Row -->
         <div class="flex justify-between items-center mb-2">
             <span class="px-1.5 py-0.5 text-[11px] font-bold rounded {{ getImportanceClass($incident) }}">
                 {{ $incident->importance }}
@@ -16,7 +15,6 @@
             </span>
         </div>
 
-        <!-- Main Info -->
         <div class="mb-2">
             <div class="flex items-baseline justify-between border-b border-dashed border-gray-200 dark:border-slate-600 pb-1">
                 <h3 class="text-base font-bold text-gray-900 dark:text-white">{{ $incident->zonal->name ?? $incident->zonal_name ?? 'N/A' }}</h3>
@@ -33,11 +31,11 @@
             <span class="font-semibold text-gray-700 dark:text-gray-300 w-12">Started:</span>
             <span class="text-[11px]">{{ $incident->start_time ? $incident->start_time->format('m/d/y, h:i A') : 'N/A' }}</span>
         </div>
-        <div class="flex items-center space-x-2">
+        {{-- <div class="flex items-center space-x-2">
             <svg class="w-3 h-3 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <span class="font-semibold text-gray-700 dark:text-gray-300 w-12">Report Time:</span>
             <span class="text-[11px]">{{ $incident->first_report_time ? $incident->first_report_time->format('m/d/y, h:i A') : 'N/A' }}</span>
-        </div>
+        </div> --}}
         <div class="flex items-center space-x-2">
             <svg class="w-3 h-3 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <span class="font-semibold text-gray-700 dark:text-gray-300 w-12">ETR:</span>
@@ -53,10 +51,16 @@
         @endif
     </div>
 
-    <!-- Footer -->
     <div class="flex justify-between items-center border-t dark:border-slate-700 pt-2 mt-auto">
-        <span class="text-[11px] font-semibold text-gray-700 dark:text-gray-300">{{ $incident->reporter_name }}</span>
-        <button wire:click="edit({{ $incident->id }})" class="px-2 py-1 text-[11px] font-semibold rounded bg-blue-50 text-blue-600 hover:bg-blue-100 transition">
+      {{-- <span class="text-[11px] font-semibold text-gray-700 dark:text-gray-300">{{ $incident->reporter_name }}</span> --}}
+
+ <a wire:click="view({{ $incident->id }})" class="cursor-pointer" wire:key="view-{{ $incident->id }}">      <svg class="w-5 h-5 text-gray-500 hover:text-blue-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+</svg>     
+</a>
+
+<button wire:click="edit({{ $incident->id }})" class="px-2 py-1 text-[11px] font-semibold rounded bg-blue-50 text-blue-600 hover:bg-blue-100 transition">
             Edit/Resolve
         </button>
     </div>

@@ -28,8 +28,8 @@ class IncidentForm extends Component
         'description' => 'required|min:5',
         'start_time' => 'required|date', 
         'first_report_time'=>'required|date|after_or_equal:start_time',
-    'initial_etr' => 'required|date|after_or_equal:first_report_time',
-        'resulation_time'=>'nullable|date',
+        'initial_etr' => 'required|date|after_or_equal:first_report_time',
+        'resulation_time'=>'nullable|date|after_or_equal:first_report_time',
     ];
 
     public function submit()
