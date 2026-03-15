@@ -42,6 +42,7 @@ class IncidentDashboard extends Component
     public $importance = 'High';
 
 //view modal
+    public $reporter_name = '';
     public bool $showViewModal = false;
     public $viewId = null;
     public $viewStatus = '';
@@ -241,7 +242,7 @@ class IncidentDashboard extends Component
             $this->viewEtr = $incident->initial_etr ? \Carbon\Carbon::parse($incident->initial_etr)->format('M/d/Y, h:i A') : 'N/A';
             $this->viewRt = $incident->resulation_time ? \Carbon\Carbon::parse($incident->resulation_time)->format('M/d/Y, h:i A') : 'N/A';
             $this->viewNotes = $incident->description ?? 'No notes provided.';
-            
+            $this->reporter_name=$incident->reporter_name;
             $this->showViewModal = true;
         }
     }

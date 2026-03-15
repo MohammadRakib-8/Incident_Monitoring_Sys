@@ -318,8 +318,21 @@
                                         Viewing ID: <span class="font-mono font-bold text-blue-600">#{{ $viewId }}</span>
                                     </p>
                                 </div>
+                                <div class="mb-2 px-3 py-2 bg-blue-50 dark:bg-slate-700 rounded-md text-xs text-gray-600 dark:text-gray-300 flex items-center justify-between border border-blue-100 dark:border-slate-600">
+            <span class="flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                <span class="font-semibold">Created By:</span>
+            </span>
+            <span class="font-bold text-blue-700 dark:text-blue-300">{{ $reporter_name }}</span>
+        </div>
+                               {{-- <div class="flex ">
+                                    <p class="text-gray-500 font-medium ">Creator: </p>
+                                    <p class="text-gray-900 dark:text-white font-semibold">{{ $reporter_name }}</p>
+                                        </div> --}}
 
-                                <div class="space-y-4">
+                                <div class="space-y-4 mt-4">
 
                                     <div class="flex items-center justify-between border-b dark:border-slate-700 pb-3">
                                         <span class="text-sm font-medium text-gray-500">Current Status:</span>
