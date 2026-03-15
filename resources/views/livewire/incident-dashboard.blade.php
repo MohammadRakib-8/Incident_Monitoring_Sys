@@ -210,7 +210,7 @@
                                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Start Time</label>
                                             <input type="datetime-local" wire:model="editStartTime" 
                                                    class="w-full bg-slate-50 dark:bg-slate-700 border-0 rounded-lg px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none">
-                                                    @error('start_time') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                                                   @error('editStartTime') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
 
                                                 </div>
 
@@ -218,7 +218,7 @@
                                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Report Time</label>
                                             <input type="datetime-local" wire:model="editReportTime" 
                                                    class="w-full bg-slate-50 dark:bg-slate-700 border-0 rounded-lg px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none">
-                                                    @error('first_report_time') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                                                    @error('editReportTime') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
 
                                                 </div>
                                     </div>
@@ -227,7 +227,7 @@
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Update ETR</label>
                                         <input type="datetime-local" wire:model="editEtr" 
                                                class="w-full bg-slate-50 dark:bg-slate-700 border-0 rounded-lg px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none">
-                                               @error('initial_etr') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                                               @error('editEtr') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
 
                                             </div>
 
