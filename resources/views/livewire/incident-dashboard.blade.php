@@ -423,7 +423,7 @@
 
     @php
         function getBorderClass($incident) {
-            if ($incident->status === 'Paused') return 'border-purple-500';
+            // if ($incident->status === 'Paused') return 'border-purple-500';
             if ($incident->importance === 'High') return 'border-red-500';
             if ($incident->importance === 'Mid') return 'border-yellow-500';
             return 'border-sky-500';
