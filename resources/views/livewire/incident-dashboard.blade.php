@@ -423,13 +423,13 @@
             if ($incident->status === 'Paused') return 'border-purple-500';
             if ($incident->importance === 'High') return 'border-red-500';
             if ($incident->importance === 'Mid') return 'border-yellow-500';
-            return 'border-gray-500';
+            return 'border-sky-500';
         }
 
         function getImportanceClass($incident) {
             if ($incident->importance === 'High') return 'bg-red-100 text-red-600';
             if ($incident->importance === 'Mid') return 'bg-yellow-100 text-yellow-700';
-            return 'bg-blue-100 text-blue-600';
+            return 'bg-blue-100 text-blue-800';
         }
 
         function getStatusClass($incident) {
