@@ -16,8 +16,11 @@ Route::get('/incidentdashboard', function () {
     return view('homepage');;
 });
 
+// Route::view('/incidentdashboard', 'homepage')->name('incidentdashboard');
 
-Route::view('/incidentdashboard', 'homepage')->name('incidentdashboard');
+Route::view('/incidentdashboard', 'homepage')
+    ->middleware(['auth']) 
+    ->name('incidentdashboard');
 
 Route::get('/homepage',function(){
 
