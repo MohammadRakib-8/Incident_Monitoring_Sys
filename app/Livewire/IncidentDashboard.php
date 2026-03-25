@@ -190,6 +190,7 @@ class IncidentDashboard extends Component
     public function closeModal()
     {
         $this->showEditModal = false;
+        $this->resetErrorBag();
         $this->reset([
             'editId', 'editStatus', 'editStartTime', 'editReportTime', 
             'editEtr', 'editRt', 'selectedZonal', 'selectedCategory', 
