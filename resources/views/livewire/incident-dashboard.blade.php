@@ -223,20 +223,21 @@
                                                 </div>
                                     </div>
 
-                                     <div>
+                                     <div class="flex gap-4">
+                                        <div class="flex-1">
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Update ETR</label>
                                         <input type="datetime-local" wire:model="editEtr" 
                                                class="w-full bg-slate-50 dark:bg-slate-700 border-0 rounded-lg px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none">
                                                @error('editEtr') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
-
-                                            </div>
+                                        </div>
 
                                     @if($editStatus == 'Resolved')
-                                        <div>
+                                        <div class="flex-1">
                                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Exact RT</label>
                                             <input type="datetime-local" wire:model="editRt" 
                                                    class="w-full bg-slate-50 dark:bg-slate-700 border-0 rounded-lg px-4 py-2.5 text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none">
                                         </div>
+                                                </div>
                                         @error('editRt') 
                                             <span class="text-red-500 text-xs mt-1">{{ $message }}</span> 
                                         @enderror
