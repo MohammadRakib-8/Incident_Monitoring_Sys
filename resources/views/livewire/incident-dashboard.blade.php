@@ -1,4 +1,4 @@
-<div x-data="{ activeTab: @entangle('currentStatusBtn') }">
+<div x-data="{ activeTab: @entangle('currentStatusBtn'), userMenu: false }">
     <nav class="sticky top-0 z-50 bg-blue-600/90 backdrop-blur-lg border-b border-white/10 shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
@@ -12,9 +12,8 @@
                     <span class="text-white font-bold text-xl tracking-tight">BDCOM Incident Monitor</span>
                 </div>
 
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-3">
                     
-                    <!-- Home Icon -->
                     <a href="{{ route('dashboard', ['status' => 'open']) }}" class="text-white/90 hover:text-white flex items-center space-x-2 transition font-medium">
                         <svg class="w-8 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
@@ -23,8 +22,8 @@
 
                     <div class="h-6 w-px bg-white/30 hidden sm:block"></div>
 
+                    <!-- Status Tabs -->
                     <div class="flex items-center space-x-2">
-                        
                         <button @click="activeTab = 'open'" wire:click="setStatus('open')" 
                            :class="activeTab === 'open' ? 'bg-white text-blue-600 shadow' : 'bg-white/10 text-white/80 hover:bg-white/20'"
                            class="px-3 py-1.5 text-xs font-bold rounded-full transition">
@@ -43,10 +42,67 @@
                             Paused
                         </button>
                     </div>
+
+                    <div class="h-6 w-px bg-white/30 hidden sm:block"></div>
+
+                    <!-- User Menu Dropdown -->
+                    <div class="relative" @click.away="userMenu = false">
+                        <button @click="userMenu = !userMenu" class="flex items-center space-x-2 bg-white/10 hover:bg-white/20 rounded-full pl-1 pr-3 py-1 transition">
+                            <div class="w-8 h-8 rounded-full bg-white/30 flex items-center justify-center text-white font-bold text-sm">
+                                {{ auth()->user()->name[0] ?? 'U' }}
+                            </div>
+                            <span class="text-white text-sm font-medium hidden md:block max-w-[100px] truncate">{{ auth()->user()->name ?? 'User' }}</span>
+                            <svg class="w-4 h-4 text-white/70 transition-transform" :class="userMenu ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+
+                        <!-- Dropdown Menu -->
+                        <div x-show="userMenu" 
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                             x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
+                             x-cloak
+                             class="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-200 dark:border-slate-700 py-2 z-[100]">
+                            
+                            <!-- User Info Header -->
+                            <div class="px-4 py-2 border-b border-gray-100 dark:border-slate-700 mb-1">
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ auth()->user()->name ?? 'User' }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ auth()->user()->email ?? '' }}</p>
+                            </div>
+
+                            <!-- Profile update -->
+                            <a href="{{ route('profile') }}" 
+                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
+                                <span class="font-medium">Edit Profile</span>
+                            </a>
+
+                            <div class="border-t border-gray-100 dark:border-slate-700 my-1"></div>
+
+                            <!-- Logout -->
+                            <form method="POST" action="{{ route('logout') }}" class="w-full">
+                                @csrf
+                                <button type="submit" 
+                                        class="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                    </svg>
+                                    <span class="font-medium">Sign Out</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
+
 
     <div class="relative overflow-hidden">
         <div class="max-w-10xl mx-auto px-4 sm:px-6 lg:px-8 py-0">
@@ -54,6 +110,7 @@
             <div class="mb-4 mt-4">
                 <div class="flex gap-2 flex-wrap items-center">
                     
+                <!-- Importance -->
                     <div class="relative">
                         <select wire:model.live="filterImportance" class="bg-slate-50 dark:bg-slate-700 border-0 rounded-lg px-9 py-2.5 text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer appearance-none pr-10">
                             <option value="">All Importance</option>
@@ -63,6 +120,7 @@
                         </select>
                     </div>
 
+                <!--All Categories -->
                     <div class="relative">
                         <select wire:model.live="filterCategory" class="bg-slate-50 dark:bg-slate-700 border-0 rounded-lg px-9 py-2.5 text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer appearance-none pr-10">
                             <option value="">All Categories</option>
@@ -71,7 +129,8 @@
                             @endforeach
                         </select>
                     </div>
-
+                        
+                <!-- All Zones -->
                     <div class="relative">
                         <select wire:model.live="filterZone" class="bg-slate-50 dark:bg-slate-700 border-0 rounded-lg px-9 py-2.5 text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer appearance-none pr-10">
                             <option value="">All Zones</option>
@@ -270,7 +329,7 @@
         </div>
     @endteleport
 
-    <!-- ADD -->
+    <!-- ADD form Modal-->
     @teleport('body')
         <div x-cloak> 
             <div wire:transition.opacity.duration.300ms>
@@ -296,7 +355,7 @@
         </div>
     @endteleport
 
-        <!-- VIEW -->
+        <!-- VIEW form Modal -->
     @teleport('body')
         <div x-cloak> 
             <div wire:transition.opacity.duration.300ms>

@@ -22,6 +22,13 @@ Route::get('/incidentdashboard', function () {
 //     ->middleware(['auth']) 
 //     ->name('incidentdashboard');
 
+Route::post('/logout', function () {
+    auth()->logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/');
+})->middleware('auth')->name('logout');
+
 Route::get('/homepage',function(){
 
 });
