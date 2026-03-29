@@ -28,9 +28,10 @@
             @endif
 
             <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+            <!-- Page Content -->
+<main class="pt-16">
+    {{ $slot }}
+</main>
         </div>
     </body>
 </html>
